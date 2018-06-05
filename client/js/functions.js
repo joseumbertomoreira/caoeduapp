@@ -49,6 +49,11 @@ function initMap() {
 	$.get({url: "/geojson", success: function(geojson){
 		$.get({url: "/musjson", success: function(munjson){
 
+
+			console.log(geojson);
+
+			console.log(munjson);
+
 			var mymap = L.map('mapid').setView([-16.361508, -49.500561], 6.5);
 			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoiam9zZXVtYmVydG9tb3JlaXJhIiwiYSI6ImNqZ2NhdWE1bDFvbDgyd3FlNWU1a3RhejUifQ.30s-PVyEjqlpW9rPEpmN7Q', {
 		    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
