@@ -13,7 +13,7 @@ module.exports = function(app){
 	Repository = {};
 
 	Repository.municipios = function(){
-		var municipios = JSON.parse(fs.readFileSync('./goias.geojson', 'utf8'));
+		var municipios = JSON.parse(fs.readFileSync(__dirname+'/../geospatial/goias.geojson', 'utf8'));
 		return municipios;
 	}
 
