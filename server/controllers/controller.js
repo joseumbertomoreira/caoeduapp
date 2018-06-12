@@ -5,7 +5,11 @@ module.exports = function(app){
 	var controller = {};
 
 	controller.geojson = function(request, response){
-		response.send(repository.municipios());
+		repository.db(function(schoolar){
+			var geojson = repository.municipios()
+			repository.mergeGeoJSONQuery(schoolar, geojson)
+			response.send(repository.municipios());
+		})
 	}
 
 	controller.schoolardata = function(request, response){

@@ -56,6 +56,17 @@ function getColor(d) {
 }
 
 
+function style(feature) {
+    return {
+        fillColor: getColor(feature.properties.density),
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+    };
+}
+
 function tableGenerator(schoolData, mun){
 	var content = "<table>";
 	content += '<tr><th>' +
@@ -127,6 +138,11 @@ function initMap(geojson, schoolData) {
 	}).addTo(mymap);
 }
 
+function mergeGeoJson(geojson, schoolData){
+	geojson[0].features.forEach(function(element, index){
+		
+	})
+}
 
 function init() {
 
@@ -136,8 +152,9 @@ function init() {
 	var d2 = $.get({url: "/musjson", dataType:"json", success: function(geojson1){
 	}});
 	 
-	$.when( d1, d2 ).done(function ( geojson, schoolData ) {
+	$.when( d1, d2 ).done(function (geojson, schoolData) {
 	  dropBox(schoolData);
+	  mergeGeoJson(geojson, schoolData);
 	  optionHandler(schoolData);
 		initMap(geojson, schoolData)
 	});

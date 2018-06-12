@@ -12,12 +12,13 @@ module.exports = function(app){
 
 	Repository = {};
 
-	Repository.municipios = function(){
+	Repository.municipios = function(context, next){
 		var municipios = JSON.parse(fs.readFileSync(__dirname+'/../geospatial/goias.geojson', 'utf8'));
-		return municipios;
+		context.municipios = municipios
+		return next();
 	}
 
-	Repository.db = function(callback){
+	Repository.db = function(context, next){
 		connection.query('SELECT Municipios.Municipio,\
                    SchoolarData.Cod_Munic,\
                     SchoolarData.Cod_Munic2,\
@@ -35,9 +36,19 @@ module.exports = function(app){
 		  	console.log('ola', error);
 		  }else{
 		  	var object = JSON.parse(JSON.stringify(results));
-		  	callback(object);
+		  	context.schoolar = object;
+		  	next();
 		  }
 		});
+
+	}
+
+	Repository.mergeGeoJSONQuery = function(context, next){
+		
+		context.municipios.features.forEach(function(element, index){
+			console.log(element.properties);
+		})
+
 	}
 
 	return Repository;
