@@ -5,6 +5,7 @@ var connection = mysql.createConnection({
   host     : '127.0.0.1',
   user     : 'admin',
   password : 'admin',
+
   database : 'CAOEDU'
 });
 
@@ -33,7 +34,7 @@ module.exports = function(app){
                              ON Municipios.Cod_Munic = SchoolarData.Cod_Munic\
                               ORDER BY SchoolarData.Ano DESC', function (error, results, fields) {
 		  if (error){
-		  	console.log('ola', error);
+		  	console.log(error);
 		  }else{
 		  	var object = JSON.parse(JSON.stringify(results));
 		  	context.schoolar = object;
@@ -44,9 +45,18 @@ module.exports = function(app){
 	}
 
 	Repository.mergeGeoJSONQuery = function(context, next){
-		
-		context.municipios.features.forEach(function(element, index){
-			console.log(element.properties);
+
+		context.municipios.features.forEach(function(element, index, array){			
+			if(index == array.length)
+				console.log(index);
+				next();
+			
+			element.properties["schoolar"] = [];
+			for(var i = 0; i < context.schoolar.length; i++){				
+				if(element.properties.Nome === context.schoolar[i].Municipio.slice(0,-1)){
+					element.properties["schoolar"].push(context.schoolar[i]);
+				}				
+			}
 		})
 
 	}

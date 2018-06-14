@@ -1,9 +1,16 @@
 module.exports = function(app) {
-
-  var controller = app.controllers.controller;
   
+  var router = {}
 
-  app.get('/geojson', controller.geojson);
-  app.get('/musjson', controller.schoolardata);
+  router.geojson = function(context, next){
+
+  	app.get('/geojson', function(request, response){
+
+  		response.send(context.municipios)
+
+  	});	
+  }
+  
+  return router;
 
 };

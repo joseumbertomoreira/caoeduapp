@@ -107,15 +107,25 @@ function optionHandler(schoolData){
 function dropBox(geojson){
 	//var mySelect = $('<select>').appendTo('#down');
 	var select = $('#down');
-	var countArray = [];	
-	for(var i = 0; i < geojson[0].length; i++){
-		if(countArray.indexOf(geojson[0][i].Municipio) === -1){
-			countArray.push(geojson[0][i].Municipio)
-			select.append($("<option />").val(i).text(geojson[0][i].Municipio));
+	var countArray = [];
+
+	geojson.features.forEach(function(element, index){
+		element.properties.Nome
+		if(countArray.indexOf(element.properties.Nome) === -1){
+			countArray.push(element.properties.Nome)
+			select.append($("<option />").val(index).text(element.properties.Nome));
+		}
+	})	
+
+	/*
+	for(var i = 0; i < geojson.features.length; i++){
+		if(countArray.indexOf(geojson.features[i].Municipio) === -1){
+			countArray.push(geojson.features[i].Municipio)
+			select.append($("<option />").val(i).text(geojson.features[i].Municipio));
 		}
 	}
-
-	tableGenerator(geojson, geojson[0][0].Municipio)
+	*/
+	//tableGenerator(geojson, geojson[0][0].Municipio)
 
 }
 
@@ -148,15 +158,15 @@ function init() {
 
 	var d1 = $.get({url: "/geojson", dataType:"json", success: function(geojson2){
 	}});
-
-	var d2 = $.get({url: "/musjson", dataType:"json", success: function(geojson1){
-	}});
 	 
-	$.when( d1, d2 ).done(function (geojson, schoolData) {
-	  dropBox(schoolData);
+	$.when( d1 ).done(function (geojson) {
+		console.log(geojson);		
+	  dropBox(geojson);
+	  /*
 	  mergeGeoJson(geojson, schoolData);
 	  optionHandler(schoolData);
 		initMap(geojson, schoolData)
+		*/
 	});
 
 }

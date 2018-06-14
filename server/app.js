@@ -9,14 +9,14 @@ app.use(express.static('/home/jose/Documentos/Trabalho/caoeduapp/client'));
 
 consign()
   .include('middleware')
-  .then('controllers')
   .then('routers')
   .into(app);
 
 chain([
   app.middleware.repository.municipios,
   app.middleware.repository.db,
-  app.middleware.repository.mergeGeoJSONQuery
+  app.middleware.repository.mergeGeoJSONQuery,
+  app.routers.router.geojson
 ]);
 
 app.listen(3000, function(){
