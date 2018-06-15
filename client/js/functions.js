@@ -57,14 +57,20 @@ function getColor(d) {
 
 
 function style(feature) {
-    return {
-        fillColor: getColor(feature.properties.density),
+	var year = $( "#year option:selected" ).text();
+	var mun = ( "#down option:selected" ).text();
+	feature.properties.schoolar.forEach(function(element, index){
+		if(mun === element.Ano && year === element.Municipio){
+			return {
+        fillColor: getColor(element.Mat_Creche_Per),
         weight: 2,
         opacity: 1,
         color: 'white',
         dashArray: '3',
         fillOpacity: 0.7
-    };
+    };	
+		}
+	})
 }
 
 function tableGenerator(schoolData, mun){
@@ -104,33 +110,48 @@ function optionHandler(schoolData){
   })
 }
 
-function dropBox(geojson){
-	//var mySelect = $('<select>').appendTo('#down');
+function dropBoxYears(features){
+	var select = $('#year');
+	var countArray = [];
+	$("#year option").remove();
+	features.properties.schoolar.forEach(function(element, index){
+		if(countArray.indexOf(element.Ano) === -1){
+			countArray.push(element.Ano)
+			console.log('atualizou!')
+			select.append($("<option/>").val(index).text(element.Ano));
+		}
+	})
+}
+
+function getYearFromCity(geojson){
+	$( "#down" ).change(function () {  
+    var mun = $( "#down option:selected" ).text();
+		geojson.features.forEach(function(element, index){
+			if(mun === element.properties.Nome)
+				dropBoxYears(element);
+
+		})
+  })	
+}
+
+
+function dropBoxNameCities(geojson){
 	var select = $('#down');
 	var countArray = [];
 
 	geojson.features.forEach(function(element, index){
-		element.properties.Nome
+		if(index === 0)
+			dropBoxYears(element);
+
 		if(countArray.indexOf(element.properties.Nome) === -1){
 			countArray.push(element.properties.Nome)
-			select.append($("<option />").val(index).text(element.properties.Nome));
+			select.append($("<option/>").val(index).text(element.properties.Nome));
 		}
 	})	
-
-	/*
-	for(var i = 0; i < geojson.features.length; i++){
-		if(countArray.indexOf(geojson.features[i].Municipio) === -1){
-			countArray.push(geojson.features[i].Municipio)
-			select.append($("<option />").val(i).text(geojson.features[i].Municipio));
-		}
-	}
-	*/
-	//tableGenerator(geojson, geojson[0][0].Municipio)
-
 }
 
 
-function initMap(geojson, schoolData) {
+function initMap(geojson) {
 	var mymap = L.map('mapid').setView([-16.361508, -49.500561], 6.5);
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoiam9zZXVtYmVydG9tb3JlaXJhIiwiYSI6ImNqZ2NhdWE1bDFvbDgyd3FlNWU1a3RhejUifQ.30s-PVyEjqlpW9rPEpmN7Q', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -140,10 +161,17 @@ function initMap(geojson, schoolData) {
 	}).addTo(mymap);
 
 	L.geoJSON(geojson,{
-		onEachFeature: function (feature, layer) {
-			if(geojson[feature.properties.Nome]){
-		    layer.bindPopup('<h1>'+feature.properties.Nome+'</h1><a href='+geojson[feature.properties.Nome]+'>Informações</a>');
-		  }
+		style: function(feature){
+	  	var year = $( "#year option:selected" ).text();
+			var mun = $( "#down option:selected" ).text();			
+			for(var i = 0; i < feature.properties.schoolar.length; i++){
+				if((year === feature.properties.schoolar[i].Ano.toString()) && (mun === feature.properties.schoolar[i].Municipio.slice(0,-1))){
+					console.log('ola')
+					return {
+		        color: "#ff0000"
+		    	};	
+				}	
+			}
 	  }
 	}).addTo(mymap);
 }
@@ -159,14 +187,14 @@ function init() {
 	var d1 = $.get({url: "/geojson", dataType:"json", success: function(geojson2){
 	}});
 	 
-	$.when( d1 ).done(function (geojson) {
-		console.log(geojson);		
-	  dropBox(geojson);
-	  /*
-	  mergeGeoJson(geojson, schoolData);
-	  optionHandler(schoolData);
-		initMap(geojson, schoolData)
-		*/
+	$.when( d1 ).done(function (geojson) {		
+	  dropBoxNameCities(geojson);
+	  getYearFromCity(geojson);
+	  console.log(geojson);
+
+	  //mergeGeoJson(geojson, schoolData);
+	  //optionHandler(schoolData);
+		initMap(geojson)
 	});
 
 }
