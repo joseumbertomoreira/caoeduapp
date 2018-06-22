@@ -16,7 +16,7 @@ function tableGenerator(geojson, mun){
 		'Pop_0_3' +
 		'Pop_4_5' +
 		'</th></tr>';
-
+	//iterando sobre feature para pegar os valores do schoolar;
 	for(var j = 0; j < geojson.features.length; j++){
 		var features = geojson.features[j]		
 		for(var i=0; i< features.properties.schoolar.length; i++){
@@ -56,7 +56,7 @@ function dropBoxYears(features){
 function dropBoxNameCities(geojson){
 	var select = $('#down');
 	var countArray = [];
-
+	//iterando features para montar o dropbox com os nomes dos municipios
 	geojson.features.forEach(function(element, index){
 		if(index === 0)
 			dropBoxYears(element);
@@ -76,6 +76,7 @@ function dropBoxNameCities(geojson){
 function styleGeojson(feature, year){
 	if(year !== ''){
 		//var mun = $( "#down option:selected" ).text();			
+		//iterando sobre o schoolar de um feature; para pegar os valors em porcentagem
 		for(var i = 0; i < feature.properties.schoolar.length; i++){
 			if((year === feature.properties.schoolar[i].Ano.toString())){
 				if(feature.properties.schoolar[i].Mat_Pre_Esc_Per > 71){
