@@ -98,9 +98,7 @@ function styleGeojson(feature, year){
 }
 
 function lMap(mymap, geojson, year){
-	L.geoJSON(geojson,{
-		style: styleGeojson
-	}).addTo(mymap);
+	L.geoJSON(geojsonFeature).addTo(map);
 }
 
 function initMap(geojson) {
@@ -145,6 +143,9 @@ function init() {
 	    $("#here_table tr").remove();
 	    tableGenerator(geojson, mun);
 	  })
+	 	$("#esporte").autocomplete({
+      source: 
+    });
 
 	});
 
