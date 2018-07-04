@@ -98,7 +98,14 @@ function styleGeojson(feature, year){
 }
 
 function lMap(mymap, geojson, year){
-	L.geoJSON(geojsonFeature).addTo(map);
+	L.geoJSON(geojsonFeature,{
+		style: function(feature) {
+        switch (feature.properties.party) {
+            case 'Republican': return {color: "#ff0000"};
+            case 'Democrat':   return {color: "#0000ff"};
+        }
+    }
+	}).addTo(map);
 }
 
 function initMap(geojson) {
