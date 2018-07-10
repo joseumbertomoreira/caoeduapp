@@ -1,0 +1,9 @@
+.distance-div {
+	margin: 15px 0px 15px 0px;
+}
+
+.ui-autocomplete {
+    height: 40px;
+    width: 200px;
+    overflow-y: scroll;
+}

@@ -4,37 +4,36 @@
 $(document).ready(function() {
 
 	function tableGenerator(features, mun){
-	var mun = $( "#down option:selected" ).text();
-	var content = "<table>";
-	content += '<tr><th>' +
-		'Ano' +
-		'Municipio' +
-		'Mat_Creche_Per' +
-		'Mat_Pre_Esc_Nun' +
-		'Mat_Pre_Esc_Per' +
-		'Pop_0_3' +
-		'Pop_4_5' +
-		'</th></tr>';
+		var mun = $( "#down option:selected" ).text();
+		var content;
+		content += 
+			'<tr> \
+				<th> Ano </th> \
+				<th> Municipio </th> \
+				<th> % Matricula Creche </th> \
+				<th> Matricula Pre Escola Numero </th> \
+				<th> % Matricula Pre Escola </th> \
+				<th> Pop_0_3 </th> \
+				<th> Pop_4_5 </th> \
+			</tr>';
 		//iterando sobre feature para pegar os valores do schoolar;
 		for(var j = 0; j < features.length; j++){
 			var schoolar = features[j].properties.schoolar		
 			for(var i=0; i< schoolar.length; i++){
-
 				if(schoolar[i].Municipio.slice(0,-1) === mun){
-			    content += '<tr><td>' + schoolar[i].Ano  +
-			    schoolar[i].Municipio + 
-			    schoolar[i].Mat_Creche_Per +
-			    schoolar[i].Mat_Pre_Esc_Nun +
-			    schoolar[i].Mat_Pre_Esc_Per +
-			    schoolar[i].Pop_0_3
-			    schoolar[i].Pop_4_5
-			    '</td></tr>';				
+			    content += 
+			    '<tr>  \
+			    	<td>' + schoolar[i].Ano + '</td> \
+			    	<td>' + schoolar[i].Municipio + '</td> \
+			    	<td>' + schoolar[i].Mat_Creche_Per + '</td> \
+			    	<td>' + schoolar[i].Mat_Pre_Esc_Nun + '</td> \
+			    	<td>' + schoolar[i].Mat_Pre_Esc_Per + '</td> \
+			    	<td>' + schoolar[i].Pop_0_3 + '</td> \
+			    	<td>' + schoolar[i].Pop_4_5 + '</td>'
+			    '</tr>';				
 				}
 			}		
 		}
-
-
-		content += "</table>"
 
 		$('#here_table').append(content);
 	}
@@ -101,8 +100,8 @@ $(document).ready(function() {
 		let schoolar = getSchoolarByCity(feature, mun);
 		var selectVariable = $('#variable');
 		await asyncForEachGetVariables(schoolar,year, function(Mat_Creche_Per, Mat_Pre_Esc_Per, index){
-			selectVariable.append($("<option/>").val("Mat_Creche_Per").text(Mat_Creche_Per));
-			selectVariable.append($("<option/>").val("Mat_Pre_Esc_Per").text(Mat_Pre_Esc_Per));
+			selectVariable.append($("<option/>").val(Mat_Creche_Per).text("Mat_Creche_Per"));
+			selectVariable.append($("<option/>").val(Mat_Pre_Esc_Per).text("Mat_Pre_Esc_Per"));
 			return
 		})	
 	}
@@ -112,13 +111,14 @@ $(document).ready(function() {
 		let schoolar = getSchoolarByCity(feature, mun);
 		var selectVariable = $('#variable');
 		await asyncForEachGetVariables(schoolar,year, function(Mat_Creche_Per, Mat_Pre_Esc_Per, index){
-			selectVariable.append($("<option/>").val(0).text(Mat_Creche_Per));
-			selectVariable.append($("<option/>").val(1).text(Mat_Pre_Esc_Per));
+			selectVariable.append($("<option/>").val(Mat_Creche_Per).text("Mat_Creche_Per"));
+			selectVariable.append($("<option/>").val(Mat_Pre_Esc_Per).text("Mat_Pre_Esc_Per"));
 			return
 		})
 	}
 
 	async function changeDropBoxYears(feature, mun){
+		console.log('oi', mun);
 		let schoolar = getSchoolarByCity(feature, mun);
 		$("#year option").remove();
 		var selectYear = $('#year');
@@ -159,8 +159,9 @@ $(document).ready(function() {
 		return feature;
 	}
 	
-	function styleMap(feat, valueName){
-		if('Mat_Creche_Per' == valueName){
+	function styleMap(feat){
+		var valueName = $( "#variable option:selected" ).text();
+		if('Mat_Creche_Per' === valueName){
 			if(feat.properties.YearProperties.Mat_Creche_Per > 71){
 				return {
 	        color: "#00FF00"
@@ -202,9 +203,7 @@ $(document).ready(function() {
 	function poligonMap(feature, map){
 		var mun = $( "#down option:selected" ).text();
 		var year = $( "#year option:selected" ).text();
-		var value = $( "#variable option:selected" ).text();
-		var valueName = $( "#variable option:selected" ).val()
-		console.log(mun, year, value);
+		var valueName = $( "#variable option:selected" ).text();
 
 		feature = getYearProperties(feature, year);
 
@@ -214,12 +213,6 @@ $(document).ready(function() {
 		layer.setStyle(styleMap);
 
 		
-		/*
-		L.geoJSON(feature,{
-			style: styleMap
-		}).addTo(map);
-		*/
-
 		return layer;
 	}
 
@@ -229,7 +222,6 @@ $(document).ready(function() {
 		var year = $( "#year option:selected" ).text();
 		var value = $( "#variable option:selected" ).text();
 		var valueName = $( "#variable option:selected" ).val()
-		console.log(mun, year, value);
 		feature = getYearProperties(feature, year);
 		/*
 		layer = L.geoJson();
@@ -276,7 +268,7 @@ $(document).ready(function() {
 	  	changeDropBoxYears(featureAndMap[0], mun);
 	  	newPoligonMap(featureAndMap[0], featureAndMap[1], featureAndMap[2])
 	  	$( "#here_table tr" ).remove();
-	  	tableGenerator(featureAndMap[0])
+	  	tableGenerator(featureAndMap[0], mun)
 	  	return featureAndMap
 	  })
 	  $("#year").change(function(){ 	
@@ -285,8 +277,22 @@ $(document).ready(function() {
 	  	changeDropBoxVariables(featureAndMap[0], mun, year);
 	  	newPoligonMap(featureAndMap[0], featureAndMap[1], featureAndMap[2])
 	  })
+	  $("#variable").change(function(){ 	
+	  	var year = $( "#year option:selected" ).text();
+	  	var mun = $( "#down option:selected" ).text();
+	  	//changeDropBoxVariables(featureAndMap[0], mun, year);
+	  	newPoligonMap(featureAndMap[0], featureAndMap[1], featureAndMap[2])
+	  })
 	  $("#esporte").autocomplete({
-	    source: getNameCities(featureAndMap[0])
+	    source: getNameCities(featureAndMap[0]),
+	    select: function( event, ui ) {
+
+		    changeDropBoxYears(featureAndMap[0], ui.item.value);
+		  	newPoligonMap(featureAndMap[0], featureAndMap[1], featureAndMap[2])
+		  	$( "#here_table tr" ).remove();
+		  	tableGenerator(featureAndMap[0], ui.item.value)
+	    	console.log(ui.item.value)
+	    }
 	  })
 	})
 

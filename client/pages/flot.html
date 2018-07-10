@@ -12,7 +12,13 @@
     <title>SB Admin 2 - Bootstrap Admin Theme</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
+    <!-- Latest compiled and minified CSS -->
+    <!--
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="  sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    -->
+    
 
     <!-- MetisMenu CSS -->
     <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
@@ -28,6 +34,7 @@
    crossorigin=""/>
 
    <link rel="stylesheet" type="text/css" href="../js/map.css">
+   <link rel="stylesheet" type="text/css" href="margin.css">
 
     <!-- Custom Fonts -->
     <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -307,29 +314,48 @@
       </nav>
 
       <div id="page-wrapper">
-        <select id="down"></select>
-        <input type="text" id="esporte" placeholder="Informe a cidade"/>
-        <select id="year"></select>
-        <select id="variable"></select>
-        <div id="mapid" style="margin-top:0px;"></div>
-        <table id="here_table"></table>
+        <div class="distance-div">
+          <form class="form-inline">
+            <div class="form-group">
+              <select id="down" class="form-control"></select>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" id="esporte" placeholder="Informe a cidade"/>
+            </div>
+            <div class="form-group">
+              <select id="year" class="form-control"></select>
+            </div>
+            <div class="form-group">
+              <select id="variable" class="form-control"></select>
+            </div>
+            <button type="submit" class="btn btn-default">Send invitation</button>
+          </form>          
+        </div>
+        <div id="mapid" style="margin-top:25px;"></div>
+        <div class="distance-div">
+          <table class="table table-bordered" id="here_table"></table>  
+        </div>
       </div>
+
+
+
       <!-- /#page-wrapper -->
 
     </div>
     <!-- /#wrapper -->
 
     <!-- jQuery -->
+    <!-- 
     <script src="../js/jquery-3.3.1.min.js"></script>
+    -->
 
-
-    <script src="../vendor/jquery/jquery.min.js"></script>
-    <script src="../js/jquery-ui.js"></script>
+    <!-- <script src="../vendor/jquery/jquery.min.js"></script> -->
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- <script src="../vendor/bootstrap/js/bootstrap.min.js"></script> -->
 
     <!-- Metis Menu Plugin JavaScript -->
+    <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../vendor/metisMenu/metisMenu.min.js"></script>
 
     <!-- Flot Charts JavaScript -->
@@ -337,6 +363,7 @@
    integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
    crossorigin=""></script>
     <!--<script src="../js/functions.js"></script>-->
+    <script src="../js/jquery-ui.js"></script>
     <script src="../js/init.js"></script>
 
 
