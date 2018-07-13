@@ -64,3 +64,19 @@ module.exports = function(app){
 	return Repository;
 
 }
+
+//utilizar o codigo do municipio;
+//mysql, extensao espacial
+//soluçao maelhor postgis;
+//pstgress e postgis(utilizar);
+
+
+//retirar o dropdbox de bosca, usar so a busca de digitar
+//mostrar os dados a partir de clicque no municipio
+//poup mostrar os valores de que sejam favoraveis aquele municipio;
+//deixar a arquitetura padrao;
+
+//app lapig com angular 2
+//http://dpat.lapig.iesa.ufg.br:4000/map
+//https://github.com/lapig-ufg/d-pat/tree/master/src/client
+//z-index: altera o valor;
