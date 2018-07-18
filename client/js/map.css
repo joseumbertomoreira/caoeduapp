@@ -2,3 +2,11 @@
 	height: 500px;
 	width: 1000px;
  }
+
+ #esporte {
+    position: relative;
+    z-index: 10000;
+}
+.ui-autocomplete {
+     z-index: 9999 !important;
+}

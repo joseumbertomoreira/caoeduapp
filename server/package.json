@@ -9,11 +9,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "consign": "^0.1.6",
     "csvtojson": "^1.1.9",
     "express": "^4.16.3",
     "middleware-chain": "^1.0.1",
     "mysql": "^2.15.0",
-    "object-array-converter": "^1.0.1"
+    "node-async-loop": "^1.2.2",
+    "nodemon": "^1.18.2",
+    "object-array-converter": "^1.0.1",
+    "xlsx": "^0.13.2"
   }
 }

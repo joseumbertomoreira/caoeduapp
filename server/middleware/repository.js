@@ -1,5 +1,6 @@
 var mysql = require('mysql');
 var fs = require('fs');
+var asyncLoop = require('node-async-loop');
 
 var connection = mysql.createConnection({
   host     : '127.0.0.1',
@@ -58,6 +59,12 @@ module.exports = function(app){
 				}				
 			}
 		})
+
+	}
+	
+	Repository.insertData = function(xlsx){
+		console.log("insertData");
+		console.log(xlsx);
 
 	}
 
