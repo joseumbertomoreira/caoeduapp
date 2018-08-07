@@ -365,11 +365,9 @@
           var workbook = XLSX.read(data, {type: "binary"});          
           var wopts = { bookType:'xlsx', bookSST:false, type:'base64' };
           var wbout = XLSX.write(workbook,wopts);
-          /*var formdata = new FormData();
-          formdata.append('file', 'test.xlsx'); // <-- server expects `file` to hold name
-          formdata.append('data', wbout)*/
-        
+          
           var parameters = {"data": wbout}
+          console.log(parameters)
           $.post('/upload',parameters, function(data) {
             console.log(data);
           });

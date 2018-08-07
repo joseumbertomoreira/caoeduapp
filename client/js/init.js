@@ -45,6 +45,59 @@ $(document).ready(function() {
 		}
 	}
 
+	function getYear(school){
+		var year = []
+		for(var i = 0; i < school.length; i++){
+			year.push(school[i].Ano)
+		}
+		return year;
+	}
+
+	function getCrechePer(school){
+		var Mat_Creche_Per = []
+		for(var i = 0; i < school.length; i++){
+			Mat_Creche_Per.push(school[i].Mat_Creche_Per)
+		}
+		return Mat_Creche_Per;
+	}
+
+	function getPreper(school){
+		var preper = []
+		for(var i = 0; i < school.length; i++){
+			preper.push(school[i].Mat_Pre_Esc_Per)
+		}
+		return preper;
+	}
+
+	function chartMaker(feature, mun){
+		var school = getSchoolarByCity(feature, mun);
+		var year = getYear(school)
+		var crechePer = getCrechePer(school)
+		var prePer = getPreper(school);
+		console.log(year);
+		console.log(crechePer);
+		console.log(prePer);
+
+		var trace1 = {
+		  x: year, 
+		  y: crechePer, 
+		  type: 'scatter',
+		  name: '% creche'
+		};
+		var trace2 = {
+		  x: year, 
+		  y: prePer, 
+		  type: 'scatter',
+		  name: '% Pre-escola'
+		};
+		var layout = {
+	    title: mun,
+	    showlegend: false
+		};
+		var data = [trace1, trace2];
+		Plotly.newPlot('myDiv', data, layout, {displayModeBar: false});
+	}
+
 	function getFeature(feature){
 		return feature
 	}
@@ -246,6 +299,8 @@ $(document).ready(function() {
         '<i style="background:#00FF00";></i><span style="font-weight: 600;">71~100%</span><br>' +
         '<i style="background:#FFFFFF";></i><span style="font-weight: 600;">Inexistente</span><br>'
 
+        //div.info.background = "#E8E8E8"
+
 		    return div;
 		};
 
@@ -334,6 +389,7 @@ $(document).ready(function() {
 		var layer = poligonMap(feature, mymap)		
 		addLegend(mymap);
 		tableGenerator(feature, "Trindade")
+		chartMaker(feature, "Trindade");
 	  return [feature,mymap,layer];
 	}).then(function(featureAndMap) {	
 	  $("#down").change(function(){
@@ -367,6 +423,7 @@ $(document).ready(function() {
 		  	newPoligonMap(featureAndMap[0], featureAndMap[1], featureAndMap[2])
 		  	$( "#here_table tr" ).remove();
 		  	tableGenerator(featureAndMap[0], ui.item.value)
+		  	chartMaker(featureAndMap[0], ui.item.value)
 	    }
 	  })
 	})
