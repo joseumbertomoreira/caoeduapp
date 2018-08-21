@@ -15,6 +15,7 @@ module.exports = function(app){
 	Repository = {};
 
 	Repository.municipios = function(context, next){
+		console.log(__dirname)
 		var municipios = JSON.parse(fs.readFileSync(__dirname+'/../geospatial/goias.geojson', 'utf8'));
 		context.municipios = municipios
 		return next();

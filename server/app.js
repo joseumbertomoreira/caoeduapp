@@ -6,7 +6,10 @@ var chain = require('middleware-chain')
 var bodyParser = require('body-parser')
 var app = express();
 
-app.use(express.static('/home/jose/Documentos/Trabalho/caoeduapp/client'));
+
+//app.use(express.static(__dirname + './../client/index.html'));
+//console.log(__dirname + './../client/index.html')
+app.use(express.static('/home/jose/Documentos/Trabalho/caoeduapp/client2'));
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true }))
 
