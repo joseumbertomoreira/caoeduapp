@@ -6,4 +6,8 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
     id: 'mapbox.light',
     accessToken: 'pk.eyJ1Ijoiam9zZXVtYmVydG9tb3JlaXJhIiwiYSI6ImNqbDJuMDkyYjFzZnMzcnF4NHhtcXZjc2MifQ.t7kEbLAbmqBoewQvM5HgDg'
 }).addTo(mymap);
-$(window).on("resize", function () { $("#mapid").height($(window).height()-40); mymap.invalidateSize(); }).trigger("resize");
+
+$(window).on("resize", function () {
+	$("#mapid").height($(window).height()-40);
+	mymap.invalidateSize();
+}).trigger("resize");

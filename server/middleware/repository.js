@@ -1,6 +1,7 @@
 var mysql = require('mysql');
 var fs = require('fs');
 var asyncLoop = require('node-async-loop');
+const parsedb = require('./parsedb.js');
 
 var connection = mysql.createConnection({
   host     : '127.0.0.1',
@@ -38,8 +39,14 @@ module.exports = function(app){
 		  if (error){
 		  	console.log(error);
 		  }else{
-		  	var object = JSON.parse(JSON.stringify(results));
-		  	context.schoolar = object;
+		  	let mpdata = JSON.parse(JSON.stringify(results));
+		  	parsedb.parse(mpdata)
+		  	/*
+		  	for(let i = 0; i < object.length; i++){
+		  		if(object[i]['Municipio'] === 'Goiânia ') console.log(object[i])
+		  	}
+		  */
+		  	//context.schoolar = object;
 		  	next();
 		  }
 		});

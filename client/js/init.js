@@ -358,10 +358,6 @@ $(document).ready(function() {
 		var mymap = L.map('mapid').setView([-16.361508, -49.500561], 6.5);
 		mymap.createPane('labels');
 		mymap.getPane('labels').style.zIndex = 650;
-		/*
-		mymap.getPane('labels').style.pointerEvents = 'none';
-		*/
-
 
 		L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoiam9zZXVtYmVydG9tb3JlaXJhIiwiYSI6ImNqZ2NhdWE1bDFvbDgyd3FlNWU1a3RhejUifQ.30s-PVyEjqlpW9rPEpmN7Q', {
 	    maxZoom: 18,
