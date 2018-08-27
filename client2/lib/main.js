@@ -74,9 +74,13 @@ $(document).ready(function() {
 	}
 
 	const promise = new Promise(function(resolve, reject) {
-		const d1 = $.get({url: "/geojson", dataType:"json", success: function(geojson2){}});
-		$.when( d1 ).done(function (geojson) {
-			let feature = geojson.features.filter(getFeature);
+		const municipalities = $.get({url: "/geojson", dataType:"json", success: function(geojson2){}});
+		const mpdata = $.get({url: "/mpdata", dataType:"json", success: function(mpdata){}});
+		$.when( municipalities, mpdata ).done(function (geojson, mpdata) {
+			mpdata = mpdata[0]
+			let feature = geojson[0].features.filter(getFeature);
+			console.log(mpdata);
+			console.log(feature);
 			feature.sort(function(a,b) {return (a.properties.Nome > b.properties.Nome) ? 1 : ((b.properties.Nome > a.properties.Nome) ? -1 : 0);} );		
 			resolve(feature);	
 		});

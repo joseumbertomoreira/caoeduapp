@@ -20,7 +20,6 @@ consign()
 chain([
   app.middleware.repository.municipios,
   app.middleware.repository.db,
-  app.middleware.repository.mergeGeoJSONQuery,
   app.routers.geojson.geojson
 ]);
 

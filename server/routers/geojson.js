@@ -10,9 +10,9 @@ module.exports = function(app) {
 
   	});
 
-  	app.post('/insertFile', function(request, response){
+  	app.get('/mpdata', function(request, response){
 
-  		response.send(context.municipios)
+  		response.send(context.mpdata)
 
   	});
   }

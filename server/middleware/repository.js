@@ -1,13 +1,12 @@
-var mysql = require('mysql');
-var fs = require('fs');
-var asyncLoop = require('node-async-loop');
+const mysql = require('mysql');
+const fs = require('fs');
+const asyncLoop = require('node-async-loop');
 const parsedb = require('./parsedb.js');
 
-var connection = mysql.createConnection({
+const connection = mysql.createConnection({
   host     : '127.0.0.1',
   user     : 'root',
   password : 'root',
-
   database : 'CAOEDU'
 });
 
@@ -16,8 +15,7 @@ module.exports = function(app){
 	Repository = {};
 
 	Repository.municipios = function(context, next){
-		console.log(__dirname)
-		var municipios = JSON.parse(fs.readFileSync(__dirname+'/../geospatial/goias.geojson', 'utf8'));
+		let municipios = JSON.parse(fs.readFileSync(__dirname+'/../geospatial/goias.geojson', 'utf8'));
 		context.municipios = municipios
 		return next();
 	}
@@ -40,19 +38,14 @@ module.exports = function(app){
 		  	console.log(error);
 		  }else{
 		  	let mpdata = JSON.parse(JSON.stringify(results));
-		  	parsedb.parse(mpdata)
-		  	/*
-		  	for(let i = 0; i < object.length; i++){
-		  		if(object[i]['Municipio'] === 'Goiânia ') console.log(object[i])
-		  	}
-		  */
-		  	//context.schoolar = object;
+		  	let modataparsed = parsedb.parse(mpdata);
+		  	context.mpdata = modataparsed;
 		  	next();
 		  }
 		});
 
 	}
-
+	/*
 	Repository.mergeGeoJSONQuery = function(context, next){
 
 		context.municipios.features.forEach(function(element, index, array){			
@@ -69,6 +62,7 @@ module.exports = function(app){
 		})
 
 	}
+	*/
 	
 	Repository.insertData = function(xlsx){
 		console.log("insertData");
