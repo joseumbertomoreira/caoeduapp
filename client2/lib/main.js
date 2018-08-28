@@ -30,6 +30,37 @@ $(document).ready(function() {
 		*/
 	}
 
+	function getYears(polygons, mpdata){
+		let years = []
+		let municipalitie = polygons[0].properties.Nome;
+		let filtredMpData = mpdata[municipalitie];
+		
+		vai ser usado pra gerar o slider
+		for(let i = 0; i < filtredMpData.length; i++){
+			years.push(filtredMpData[i].Ano)
+		}
+		let min = Math.min.apply(Math, years)
+		let max = Math.max.apply(Math, years)
+			
+	}
+
+	function dboxGeneration(polygons, mpdata){
+		let years = []
+		let municipalitie = polygons[0].properties.Nome;
+		let filtredMpData = mpdata[municipalitie];
+		/*
+		vai ser usado pra gerar o slider
+		for(let i = 0; i < filtredMpData.length; i++){
+			years.push(filtredMpData[i].Ano)
+		}
+		let min = Math.min.apply(Math, years)
+		let max = Math.max.apply(Math, years)
+		*/
+		let selectVariable = $('#variable');
+		selectVariable.append($("<option/>").val(Mat_Creche_Per).text("Mat_Creche_Per"));
+		selectVariable.append($("<option/>").val(Mat_Pre_Esc_Per).text("Mat_Pre_Esc_Per"));
+	}
+
 	function poligonMap(feature, map){
 
 		feature = getYearProperties(feature);
@@ -73,24 +104,41 @@ $(document).ready(function() {
 
 	}
 
+	const handlesSlider = document.getElementById('slider-handles');
+
 	const promise = new Promise(function(resolve, reject) {
-		const municipalities = $.get({url: "/geojson", dataType:"json", success: function(geojson2){}});
+		const municipalities = $.get({url: "/geojson", dataType:"json", success: function(polygons){}});
 		const mpdata = $.get({url: "/mpdata", dataType:"json", success: function(mpdata){}});
-		$.when( municipalities, mpdata ).done(function (geojson, mpdata) {
+		$.when( municipalities, mpdata ).done(function (polygons, mpdata) {
 			mpdata = mpdata[0]
-			let feature = geojson[0].features.filter(getFeature);
-			console.log(mpdata);
-			console.log(feature);
+			let feature = polygons[0].features.filter(getFeature);
 			feature.sort(function(a,b) {return (a.properties.Nome > b.properties.Nome) ? 1 : ((b.properties.Nome > a.properties.Nome) ? -1 : 0);} );		
-			resolve(feature);	
+			resolve([feature,mpdata]);	
 		});
 	});
 
-	promise.then(function(feature) {
-		let mymap = initMap(feature);
-		console.log(feature);
+	promise.then(function(ajax) {
+		let mymap = initMap(ajax[0]);
+		console.log(ajax[0]);
+		console.log(ajax[1]);
+		dboxGeneration(ajax[0], ajax[1])
 		//let layer = poligonMap(feature, mymap)
+		noUiSlider.create(handlesSlider, {
+			start: [ 4000, 8000 ],
+			range: {
+				'min': [  2000 ],
+				'max': [ 10000 ]
+			}
+		});
 	})
+
+	noUiSlider.create(handlesSlider, {
+		start: [ 4000, 8000 ],
+		range: {
+			'min': [  2000 ],
+			'max': [ 10000 ]
+		}
+	});
 
 
 });
