@@ -6,77 +6,79 @@ $(document).ready(function() {
 		return feature
 	}
 
-	function getSchoolarByYear(feat, year){
-		for(let i = 0 ; i < feat.schoolar.length; i++){
-			if(year == feat.schoolar[i].Ano){
-				return feat.schoolar[i];
-			}
+	function sliderPipDynamics(){
+
+		var pips = pipsSlider.querySelectorAll('.noUi-value');
+
+		function clickOnPip ( ) {
+		    var value = Number(this.getAttribute('data-value'));
+		    console.log(value);
+		    pipsSlider.noUiSlider.set(value);
+
 		}
+
+		for ( var i = 0; i < pips.length; i++ ) {
+	    // For this example. Do this in CSS!
+	    pips[i].style.cursor = 'pointer';
+	    pips[i].addEventListener('click', clickOnPip);
+		}
+
 	}
 
-	function getYearProperties(feature){
-		/*
-		for(let i = 0; i < feature.length; i++){
-			if(getSchoolarByYear(feature[i].properties, year) != undefined){
-				feature[i].properties["YearProperties"] = getSchoolarByYear(feature[i].properties, year);
-				feature[i].properties["Ano"] = feature[i].properties.YearProperties.Ano;
-				feature[i].properties["Mat_Pre_Esc_Per"] = feature[i].properties.YearProperties.Mat_Pre_Esc_Per;
-				feature[i].properties["Mat_Creche_Per"] = feature[i].properties.YearProperties.Mat_Creche_Per;
-			}else{
-				feature[i].properties["YearProperties"] = {'Mat_Creche_Per': -1, 'Mat_Pre_Esc_Per': -1}
-			}
-		}
-		return feature;
-		*/
+	function popUpMaker(la, mpdata){
+
 	}
 
-	function getYears(polygons, mpdata){
+	function componentMaker(polygons, mpdata){
 		let years = []
 		let municipalitie = polygons[0].properties.Nome;
 		let filtredMpData = mpdata[municipalitie];
+
+		$("#municipality").val(municipalitie);
 		
-		vai ser usado pra gerar o slider
-		for(let i = 0; i < filtredMpData.length; i++){
-			years.push(filtredMpData[i].Ano)
-		}
-		let min = Math.min.apply(Math, years)
-		let max = Math.max.apply(Math, years)
-			
-	}
-
-	function dboxGeneration(polygons, mpdata){
-		let years = []
-		let municipalitie = polygons[0].properties.Nome;
-		let filtredMpData = mpdata[municipalitie];
-		/*
-		vai ser usado pra gerar o slider
-		for(let i = 0; i < filtredMpData.length; i++){
-			years.push(filtredMpData[i].Ano)
-		}
-		let min = Math.min.apply(Math, years)
-		let max = Math.max.apply(Math, years)
-		*/
 		let selectVariable = $('#variable');
-		selectVariable.append($("<option/>").val(Mat_Creche_Per).text("Mat_Creche_Per"));
-		selectVariable.append($("<option/>").val(Mat_Pre_Esc_Per).text("Mat_Pre_Esc_Per"));
+		selectVariable.append($("<option/>").val(filtredMpData[0].Mat_Creche_Per).text("% matricula creche"));
+		selectVariable.append($("<option/>").val(filtredMpData[0].Mat_Pre_Esc_Per).text("% matricula pre-escola"));
+		
+		let count = 0;
+
+		for(let i = 0; i < filtredMpData.length; i++){
+			years.push(filtredMpData[i].Ano)
+			count++
+		}
+		let min = Math.min.apply(Math, years)
+		let max = Math.max.apply(Math, years)
+
+		noUiSlider.create(pipsSlider, {
+			range: {
+        min: min,
+        max: max
+   		},
+	    start: [ min ],
+	    pips: { mode: 'count', values: count }
+		});
+
+		sliderPipDynamics()
+
 	}
 
-	function poligonMap(feature, map){
-
-		feature = getYearProperties(feature);
+	function poligonMap(feature, mpdata){
 		
-		/*
-		var layer = L.geoJson();
+		let layer = L.geoJson();
 
 		layer.addData(feature);
 
 		layer.eachLayer(function (la) {
+			console.log(la.feature.properties.Nome);
+			//get value from slider
+			/*
 			la.bindPopup("<b>Ano:</b> "+la.feature.properties.Ano+'</br>'+
 				"<b>Municipio:</b> "+la.feature.properties.Nome+'</br>'+
 				"<b>% creche:</b> "+la.feature.properties.Mat_Creche_Per+'</br>'+
 				"<b>% pre-escola:</b> "+la.feature.properties.Mat_Pre_Esc_Per)
+			*/
 		});
-
+		/*
 		layer.addTo(map);
 		layer.setStyle(styleMap);
 		
@@ -104,7 +106,7 @@ $(document).ready(function() {
 
 	}
 
-	const handlesSlider = document.getElementById('slider-handles');
+	const pipsSlider = document.getElementById('slider-pips');
 
 	const promise = new Promise(function(resolve, reject) {
 		const municipalities = $.get({url: "/geojson", dataType:"json", success: function(polygons){}});
@@ -118,27 +120,11 @@ $(document).ready(function() {
 	});
 
 	promise.then(function(ajax) {
-		let mymap = initMap(ajax[0]);
-		console.log(ajax[0]);
-		console.log(ajax[1]);
-		dboxGeneration(ajax[0], ajax[1])
-		//let layer = poligonMap(feature, mymap)
-		noUiSlider.create(handlesSlider, {
-			start: [ 4000, 8000 ],
-			range: {
-				'min': [  2000 ],
-				'max': [ 10000 ]
-			}
-		});
+
+		let mymap = initMap(ajax[0]);		
+		componentMaker(ajax[0], ajax[1])
+		poligonMap(ajax[0], ajax[1])
+
 	})
-
-	noUiSlider.create(handlesSlider, {
-		start: [ 4000, 8000 ],
-		range: {
-			'min': [  2000 ],
-			'max': [ 10000 ]
-		}
-	});
-
 
 });
