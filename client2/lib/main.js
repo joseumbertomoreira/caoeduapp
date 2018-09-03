@@ -2,6 +2,14 @@
 
 $(document).ready(function() {
 
+	const variables = {
+		'% matricula creche': 'Mat_Creche_Per',
+		'% matricula pre-escola': 'Mat_Pre_Esc_Per'
+	}
+
+	const mpData = {};
+
+
 	function getFeature(feature){
 		return feature
 	}
@@ -12,7 +20,6 @@ $(document).ready(function() {
 
 		function clickOnPip ( ) {
 		    var value = Number(this.getAttribute('data-value'));
-		    console.log(value);
 		    pipsSlider.noUiSlider.set(value);
 
 		}
@@ -25,11 +32,81 @@ $(document).ready(function() {
 
 	}
 
-	function popUpMaker(la, mpdata){
+	function styleMap(feat){
+		let value = $( "#variable option:selected" ).text()
+		let year = pipsSlider.noUiSlider.get();
 
+		if('Mat_Creche_Per' === valueName){
+			if(feat.properties.YearProperties.Mat_Creche_Per > 71){
+				return {
+	        color: "#000000",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#00FF00"
+	    	};	
+			}else if(feat.properties.YearProperties.Mat_Creche_Per < 70 && feat.properties.YearProperties.Mat_Creche_Per > 51){
+				return {
+	        color: "#000000",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#FFFF00"
+	    	};
+			}else if(feat.properties.YearProperties.Mat_Creche_Per < 50 && feat.properties.YearProperties.Mat_Creche_Per > 0){
+				return {
+	        color: "#000000",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#FF0000"
+	    	};
+			}	else {
+				return {
+	        color: "#000000",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#FFFFFF"
+	    	};
+			}
+		}else{
+			if(feat.properties.YearProperties.Mat_Pre_Esc_Per > 71){
+				return {
+	        color: "#000000",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#00FF00"
+	    	};	
+			}else if(feat.properties.YearProperties.Mat_Pre_Esc_Per < 70 && feat.properties.YearProperties.Mat_Pre_Esc_Per > 51){
+				return {
+	        color: "#000000",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#FFFF00"
+	    	};
+			}else if(feat.properties.YearProperties.Mat_Pre_Esc_Per < 50 && feat.properties.YearProperties.Mat_Pre_Esc_Per > 0){
+				return {
+	        color: "#000000",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#FF0000"
+	    	};
+			}else{
+				return {
+	        color: "#000000",
+	        opacity: 0.2,
+	        fillOpacity: 0.7,
+	        fillColor: "#FFFFFF"
+	    	};	
+			}						
+		}
 	}
 
-	function componentMaker(polygons, mpdata){
+	function componentMaker(polygons, mpdata, mymap){
 		let years = []
 		let municipalitie = polygons[0].properties.Nome;
 		let filtredMpData = mpdata[municipalitie];
@@ -46,6 +123,7 @@ $(document).ready(function() {
 			years.push(filtredMpData[i].Ano)
 			count++
 		}
+
 		let min = Math.min.apply(Math, years)
 		let max = Math.max.apply(Math, years)
 
@@ -59,31 +137,33 @@ $(document).ready(function() {
 		});
 
 		sliderPipDynamics()
+		poligonMap(polygons, mpdata, mymap)
 
 	}
 
-	function poligonMap(feature, mpdata){
+	function poligonMap(feature, mpdata, map){
 		
 		let layer = L.geoJson();
 
 		layer.addData(feature);
 
+		/*
 		layer.eachLayer(function (la) {
 			console.log(la.feature.properties.Nome);
 			//get value from slider
-			/*
 			la.bindPopup("<b>Ano:</b> "+la.feature.properties.Ano+'</br>'+
 				"<b>Municipio:</b> "+la.feature.properties.Nome+'</br>'+
 				"<b>% creche:</b> "+la.feature.properties.Mat_Creche_Per+'</br>'+
 				"<b>% pre-escola:</b> "+la.feature.properties.Mat_Pre_Esc_Per)
-			*/
 		});
-		/*
+		*/
+
 		layer.addTo(map);
+		
 		layer.setStyle(styleMap);
 		
-		return layer;
-		*/
+		
+		
 	}
 
 	function initMap(feature){
@@ -121,9 +201,10 @@ $(document).ready(function() {
 
 	promise.then(function(ajax) {
 
+		mpData = ajax[1];
+		console.log(mpData);
 		let mymap = initMap(ajax[0]);		
-		componentMaker(ajax[0], ajax[1])
-		poligonMap(ajax[0], ajax[1])
+		componentMaker(ajax[0], ajax[1], mymap)
 
 	})
 
