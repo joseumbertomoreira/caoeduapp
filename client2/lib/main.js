@@ -1,14 +1,10 @@
 //https://refreshless.com/nouislider/
-
 $(document).ready(function() {
 
 	const variables = {
 		'% matricula creche': 'Mat_Creche_Per',
 		'% matricula pre-escola': 'Mat_Pre_Esc_Per'
 	}
-
-	const mpData = {};
-
 
 	function getFeature(feature){
 		return feature
@@ -159,6 +155,8 @@ $(document).ready(function() {
 		*/
 
 		layer.addTo(map);
+		console.log("feature",feature)
+		console.log("map",mpdata)
 		
 		layer.setStyle(styleMap);
 		
@@ -187,25 +185,23 @@ $(document).ready(function() {
 	}
 
 	const pipsSlider = document.getElementById('slider-pips');
-
+	
 	const promise = new Promise(function(resolve, reject) {
 		const municipalities = $.get({url: "/geojson", dataType:"json", success: function(polygons){}});
 		const mpdata = $.get({url: "/mpdata", dataType:"json", success: function(mpdata){}});
 		$.when( municipalities, mpdata ).done(function (polygons, mpdata) {
-			mpdata = mpdata[0]
+			let mpData = mpdata[0]
 			let feature = polygons[0].features.filter(getFeature);
 			feature.sort(function(a,b) {return (a.properties.Nome > b.properties.Nome) ? 1 : ((b.properties.Nome > a.properties.Nome) ? -1 : 0);} );		
-			resolve([feature,mpdata]);	
+			resolve([feature,mpData]);	
 		});
 	});
 
 	promise.then(function(ajax) {
 
-		mpData = ajax[1];
-		console.log(mpData);
 		let mymap = initMap(ajax[0]);		
 		componentMaker(ajax[0], ajax[1], mymap)
 
 	})
-
+	
 });
