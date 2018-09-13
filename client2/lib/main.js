@@ -1,4 +1,3 @@
-//https://refreshless.com/nouislider/
 $(document).ready(function() {
 
 	let feature;
@@ -31,84 +30,81 @@ $(document).ready(function() {
 
 	}
 
-	function styleMap(feat){
-		let value = $( "#variable option:selected" ).text()
-		let year = pipsSlider.noUiSlider.get();
+	function getYear(list, year){
 
-		if('Mat_Creche_Per' === valueName){
-			if(feat.properties.YearProperties.Mat_Creche_Per > 71){
-				return {
-	        color: "#000000",
-	        opacity: 0.2,
-	        weight: 2,
-	        fillOpacity: 0.7,
-	        fillColor: "#00FF00"
-	    	};	
-			}else if(feat.properties.YearProperties.Mat_Creche_Per < 70 && feat.properties.YearProperties.Mat_Creche_Per > 51){
-				return {
-	        color: "#000000",
-	        opacity: 0.2,
-	        weight: 2,
-	        fillOpacity: 0.7,
-	        fillColor: "#FFFF00"
-	    	};
-			}else if(feat.properties.YearProperties.Mat_Creche_Per < 50 && feat.properties.YearProperties.Mat_Creche_Per > 0){
-				return {
-	        color: "#000000",
-	        opacity: 0.2,
-	        weight: 2,
-	        fillOpacity: 0.7,
-	        fillColor: "#FF0000"
-	    	};
-			}	else {
-				return {
-	        color: "#000000",
-	        opacity: 0.2,
-	        weight: 2,
-	        fillOpacity: 0.7,
-	        fillColor: "#FFFFFF"
-	    	};
-			}
-		}else{
-			if(feat.properties.YearProperties.Mat_Pre_Esc_Per > 71){
-				return {
-	        color: "#000000",
-	        opacity: 0.2,
-	        weight: 2,
-	        fillOpacity: 0.7,
-	        fillColor: "#00FF00"
-	    	};	
-			}else if(feat.properties.YearProperties.Mat_Pre_Esc_Per < 70 && feat.properties.YearProperties.Mat_Pre_Esc_Per > 51){
-				return {
-	        color: "#000000",
-	        opacity: 0.2,
-	        weight: 2,
-	        fillOpacity: 0.7,
-	        fillColor: "#FFFF00"
-	    	};
-			}else if(feat.properties.YearProperties.Mat_Pre_Esc_Per < 50 && feat.properties.YearProperties.Mat_Pre_Esc_Per > 0){
-				return {
-	        color: "#000000",
-	        opacity: 0.2,
-	        weight: 2,
-	        fillOpacity: 0.7,
-	        fillColor: "#FF0000"
-	    	};
-			}else{
-				return {
-	        color: "#000000",
-	        opacity: 0.2,
-	        fillOpacity: 0.7,
-	        fillColor: "#FFFFFF"
-	    	};	
-			}						
+		for(let i = 0; i < list.length; i++){
+			if(list[i].Ano == year)
+				return list[i]
 		}
 	}
 
-	function componentMaker(polygons, mpdata, mymap){
+	function styleMap(feat){
+		let value = $( "#variable option:selected" ).text()
+		let year = pipsSlider.noUiSlider.get();
+		let aggregateDataByyear;
+
+		if(mpData[feat.properties.Nome] !== undefined)
+			aggregateDataByyear = getYear(mpData[feat.properties.Nome], year);
+		
+		console.log(feat.properties.Nome, mpData[feat.properties.Nome], aggregateDataByyear)
+
+		if(mpData[feat.properties.Nome] !== undefined){
+			console.log(value)
+			console.log(variables[value])
+			console.log(aggregateDataByyear[variables[value]])
+			if(aggregateDataByyear[variables[value]] >= 92){
+				return {
+	        color: "#FFFFFF",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#D7191C"
+	    	};
+			} 
+			else if(aggregateDataByyear[variables[value]] < 92 && aggregateDataByyear[variables[value]] >= 72){
+				return {
+	        color: "#FFFFFF",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#FDAE61"
+	    	};
+			}
+			else if(aggregateDataByyear[variables[value]] < 72 && aggregateDataByyear[variables[value]] >= 53){
+				return {
+	        color: "#FFFFFF",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#FFFFBF"
+	    	};
+	    }
+  		else if(aggregateDataByyear[variables[value]] < 53 && aggregateDataByyear[variables[value]] >= 22){
+  			console.log(aggregateDataByyear[variables[value]])
+				return {
+	        color: "#FFFFFF",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#A6D96A"
+	    	};
+	    }
+	    else if(aggregateDataByyear[variables[value]] < 22 && aggregateDataByyear[variables[value]] >= 0){
+				return {
+	        color: "#1A9641",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#1A9641"
+	    	};
+			}		
+		}
+	}
+
+	function componentMaker(mymap){
 		let years = []
-		let municipalitie = polygons[0].properties.Nome;
-		let filtredMpData = mpdata[municipalitie];
+		let municipalitie = feature[0].properties.Nome;
+		let filtredMpData = mpData[municipalitie];
 
 		$("#municipality").val(municipalitie);
 		
@@ -136,11 +132,11 @@ $(document).ready(function() {
 		});
 
 		sliderPipDynamics()
-		poligonMap(polygons, mpdata, mymap)
+		poligonMap(mymap)
 
 	}
 
-	function poligonMap(feature, mpdata, map){
+	function poligonMap(map){
 		
 		let layer = L.geoJson();
 
@@ -199,10 +195,10 @@ $(document).ready(function() {
 
 	promise.then(function() {
 
-		console.log(mpData, feature)
+		//console.log(mpData, feature)
 
 		let mymap = initMap(feature);		
-		componentMaker(feature, mpData, mymap)
+		componentMaker(mymap)
 
 	})
 	
