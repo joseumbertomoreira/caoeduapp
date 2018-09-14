@@ -2,6 +2,7 @@ $(document).ready(function() {
 
 	let feature;
 	let mpData;
+	let layer = L.geoJson(); 
 
 	const variables = {
 		'% matricula creche': 'Mat_Creche_Per',
@@ -32,6 +33,8 @@ $(document).ready(function() {
 
 	function getYear(list, year){
 
+		if(list === undefined)
+			return -1
 		for(let i = 0; i < list.length; i++){
 			if(list[i].Ano == year)
 				return list[i]
@@ -41,24 +44,27 @@ $(document).ready(function() {
 	function styleMap(feat){
 		let value = $( "#variable option:selected" ).text()
 		let year = pipsSlider.noUiSlider.get();
-		let aggregateDataByyear;
+		let aggregateDataByyear = getYear(mpData[feat.properties.Nome], year);
 
-		if(mpData[feat.properties.Nome] !== undefined)
-			aggregateDataByyear = getYear(mpData[feat.properties.Nome], year);
-		
-		console.log(feat.properties.Nome, mpData[feat.properties.Nome], aggregateDataByyear)
+		if(aggregateDataByyear === -1){
+			return {
+	        color: "#0000FF",
+	        opacity: 0.2,
+	        weight: 2,
+	        fillOpacity: 0.7,
+	        fillColor: "#0000ff"
+	    	};
+		}
 
 		if(mpData[feat.properties.Nome] !== undefined){
-			console.log(value)
-			console.log(variables[value])
-			console.log(aggregateDataByyear[variables[value]])
+			
 			if(aggregateDataByyear[variables[value]] >= 92){
 				return {
 	        color: "#FFFFFF",
 	        opacity: 0.2,
 	        weight: 2,
 	        fillOpacity: 0.7,
-	        fillColor: "#D7191C"
+	        fillColor: "	#006400"
 	    	};
 			} 
 			else if(aggregateDataByyear[variables[value]] < 92 && aggregateDataByyear[variables[value]] >= 72){
@@ -67,7 +73,7 @@ $(document).ready(function() {
 	        opacity: 0.2,
 	        weight: 2,
 	        fillOpacity: 0.7,
-	        fillColor: "#FDAE61"
+	        fillColor: "#caff70"
 	    	};
 			}
 			else if(aggregateDataByyear[variables[value]] < 72 && aggregateDataByyear[variables[value]] >= 53){
@@ -76,17 +82,16 @@ $(document).ready(function() {
 	        opacity: 0.2,
 	        weight: 2,
 	        fillOpacity: 0.7,
-	        fillColor: "#FFFFBF"
+	        fillColor: "#ffff00"
 	    	};
 	    }
   		else if(aggregateDataByyear[variables[value]] < 53 && aggregateDataByyear[variables[value]] >= 22){
-  			console.log(aggregateDataByyear[variables[value]])
 				return {
 	        color: "#FFFFFF",
 	        opacity: 0.2,
 	        weight: 2,
 	        fillOpacity: 0.7,
-	        fillColor: "#A6D96A"
+	        fillColor: "#ffa500"
 	    	};
 	    }
 	    else if(aggregateDataByyear[variables[value]] < 22 && aggregateDataByyear[variables[value]] >= 0){
@@ -95,10 +100,64 @@ $(document).ready(function() {
 	        opacity: 0.2,
 	        weight: 2,
 	        fillOpacity: 0.7,
-	        fillColor: "#1A9641"
+	        fillColor: "#ff0000"
 	    	};
 			}		
 		}
+	}
+
+	function getYearFromMun(list){
+		console.log(list);
+		let years = [];
+		for(let i = 0; i < list.length; i++){
+			years.push(list[i].Ano)
+		}
+		return years
+
+	}
+
+	function getCreche(list){
+		let creche = [];
+		for(let i = 0; i < list.length; i++){
+			creche.push(list[i].Mat_Creche_Per)
+		}
+		return creche		
+	}
+
+	function getPreEscola(list){
+		let preEscola = [];
+		for(let i = 0; i < list.length; i++){
+			preEscola.push(list[i].Mat_Pre_Esc_Per)
+		}
+		return preEscola		
+	}
+
+	function chartMaker(){
+		let municipalitie = $( "#municipality" ).val();
+		//let variableValues = Object.values(variables);
+		let years = getYearFromMun(mpData[municipalitie])
+		let creche = getCreche(mpData[municipalitie])
+		let preEscola = getPreEscola(mpData[municipalitie])
+		
+		var trace1 = {
+		  x: years, 
+		  y: creche, 
+		  type: 'scatter',
+		  name: '% creche'
+		};
+		var trace2 = {
+		  x: years,
+		  y: preEscola, 
+		  type: 'scatter',
+		  name: '% Pre-escola'
+		};
+		var layout = {
+	    title: municipalitie,
+	    showlegend: false
+		};
+		var data = [trace1, trace2];
+		Plotly.newPlot('myDiv', data, layout, {displayModeBar: false});
+		
 	}
 
 	function componentMaker(mymap){
@@ -137,27 +196,35 @@ $(document).ready(function() {
 	}
 
 	function poligonMap(map){
-		
-		let layer = L.geoJson();
 
 		layer.addData(feature);
 
-		/*
+		
 		layer.eachLayer(function (la) {
-			console.log(la.feature.properties.Nome);
-			//get value from slider
-			la.bindPopup("<b>Ano:</b> "+la.feature.properties.Ano+'</br>'+
+			let year = pipsSlider.noUiSlider.get();
+			let value = $( "#variable option:selected" ).text()
+			let aggregateDataByyear = getYear(mpData[la.feature.properties.Nome], year);
+			la.bindPopup("<b>Ano:</b> "+aggregateDataByyear.Ano+'</br>'+
 				"<b>Municipio:</b> "+la.feature.properties.Nome+'</br>'+
-				"<b>% creche:</b> "+la.feature.properties.Mat_Creche_Per+'</br>'+
-				"<b>% pre-escola:</b> "+la.feature.properties.Mat_Pre_Esc_Per)
-		});
-		*/
+				"<b>% Valor:</b> "+aggregateDataByyear[variables[value]]+'</br>')
+		});		
 
 		layer.addTo(map);		
-		layer.setStyle(styleMap);
+		layer.setStyle(styleMap);		
 		
-		
-		
+	}
+
+	function setLayer(map){
+		layer.eachLayer(function (la) {
+
+			let year = Math.floor(pipsSlider.noUiSlider.get());			 
+			let value = $( "#variable option:selected" ).text()
+			let aggregateDataByyear = getYear(mpData[la.feature.properties.Nome], year);
+			la.bindPopup("<b>Ano:</b> "+aggregateDataByyear.Ano+'</br>'+
+				"<b>Municipio:</b> "+la.feature.properties.Nome+'</br>'+
+				"<b>% Valor:</b> "+aggregateDataByyear[variables[value]]+'</br>')
+		});
+		layer.setStyle(styleMap)
 	}
 
 	function initMap(feature){
@@ -195,10 +262,29 @@ $(document).ready(function() {
 
 	promise.then(function() {
 
-		//console.log(mpData, feature)
-
 		let mymap = initMap(feature);		
 		componentMaker(mymap)
+		chartMaker()
+		return mymap
+
+	}).then(function(mymap){
+
+		$("#variable").change(function(){ 	
+	  	setLayer(mymap);
+	  })
+		
+		$('#slider-pips').slider({
+    	change: function(event, ui) { 
+      	setLayer(mymap)
+	    } 
+		})
+
+		$("#municipality").autocomplete({
+	    source: Object.keys(mpData),
+	    select: function( event, ui ) {
+		    chartMaker()
+	    }
+	  })
 
 	})
 	
