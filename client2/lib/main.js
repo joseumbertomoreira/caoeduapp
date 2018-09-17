@@ -13,6 +13,32 @@ $(document).ready(function() {
 		return feature
 	}
 
+
+
+	function addLegend(map){
+    var legend = L.control({position: 'bottomright'});
+		legend.onAdd = function (map) {
+		    var div = L.DomUtil.create('div', 'info legend'),
+		        grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+		        labels = [];
+
+		    div.innerHTML =
+		    '<i style="background:#0000FF";></i><span style="font-weight: 600;">Indefinido</span><br>' +
+        '<i style="background:#ff0000";></i><span style="font-weight: 600;">0%~22%</span><br>' +
+        '<i style="background:#ffa500";></i><span style="font-weight: 600;">22%~53%</span><br>' +
+        '<i style="background:#ffff00";></i><span style="font-weight: 600;">53%~72%</span><br>' +
+        '<i style="background:#caff70";></i><span style="font-weight: 600;">72%~92%</span><br>' +
+        '<i style="background:#006400";></i><span style="font-weight: 600;">Maior 92%</span><br>'
+
+        //div.info.background = "#E8E8E8"
+
+		    return div;
+		};
+		legend.addTo(map);
+	}
+
+
+
 	function sliderPipDynamics(){
 
 		var pips = pipsSlider.querySelectorAll('.noUi-value');
@@ -24,7 +50,6 @@ $(document).ready(function() {
 		}
 
 		for ( var i = 0; i < pips.length; i++ ) {
-	    // For this example. Do this in CSS!
 	    pips[i].style.cursor = 'pointer';
 	    pips[i].addEventListener('click', clickOnPip);
 		}
@@ -64,7 +89,7 @@ $(document).ready(function() {
 	        opacity: 0.2,
 	        weight: 2,
 	        fillOpacity: 0.7,
-	        fillColor: "	#006400"
+	        fillColor: "#006400"
 	    	};
 			} 
 			else if(aggregateDataByyear[variables[value]] < 92 && aggregateDataByyear[variables[value]] >= 72){
@@ -96,7 +121,7 @@ $(document).ready(function() {
 	    }
 	    else if(aggregateDataByyear[variables[value]] < 22 && aggregateDataByyear[variables[value]] >= 0){
 				return {
-	        color: "#1A9641",
+	        color: "#FFFFFF",
 	        opacity: 0.2,
 	        weight: 2,
 	        fillOpacity: 0.7,
@@ -264,11 +289,13 @@ $(document).ready(function() {
 
 		let mymap = initMap(feature);		
 		componentMaker(mymap)
+		addLegend(mymap)
 		chartMaker()
 		return mymap
 
 	}).then(function(mymap){
-
+		let municipalitie = $( "#municipality" ).val();
+		console.log(municipalitie)
 		$("#variable").change(function(){ 	
 	  	setLayer(mymap);
 	  })
@@ -286,8 +313,21 @@ $(document).ready(function() {
 	    }
 	  })
 
-	  $( "#mun" ).click(function() {
-		  alert( "Handler for .click() called." );
+	  $( "#zoomin" ).click(function() {
+
+	  	let municipalitie = $( "#municipality" ).val();	  	
+	  	layer.eachLayer(function (lay) {
+			  if(lay.feature.properties.Nome === municipalitie){
+			  	mymap.fitBounds(lay.getBounds());
+			  }
+			});
+
+		});
+
+		$( "#zoomout" ).click(function() {
+	  	let municipalitie = $( "#municipality" ).val();
+	  	
+	  	mymap.setView([-16.361508, -49.500561], 6.49);
 		});
 
 	})

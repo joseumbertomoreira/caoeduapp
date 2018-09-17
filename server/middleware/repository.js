@@ -5,8 +5,8 @@ const parsedb = require('./parsedb.js');
 
 const connection = mysql.createConnection({
   host     : '127.0.0.1',
-  user     : 'root',
-  password : 'root',
+  user     : 'admin',
+  password : 'admin',
   database : 'CAOEDU'
 });
 
