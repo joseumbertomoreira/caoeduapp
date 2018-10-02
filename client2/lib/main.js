@@ -2,7 +2,9 @@ $(document).ready(function() {
 
 	let feature;
 	let mpData;
-	let layer = L.geoJson(); 
+	let layer = L.geoJson();
+	//import { geoJson } from 'spacialCall.js'
+	
 
 	const variables = {
 		'% matricula creche': 'Mat_Creche_Per',

@@ -15,6 +15,13 @@ module.exports = function(app) {
   		response.send(context.mpdata)
 
   	});
+
+    app.get('/transporte', function(request, response){
+
+      response.send(context.transporte)
+
+    });
+
   }
   
   return routerGeo;

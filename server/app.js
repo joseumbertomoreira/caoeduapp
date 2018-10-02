@@ -19,7 +19,8 @@ consign()
 
 chain([
   app.middleware.repository.municipios,
-  app.middleware.repository.db,
+  app.middleware.repository.transporte,
+  app.middleware.repository.schoolar,
   app.routers.geojson.geojson
 ]);
 

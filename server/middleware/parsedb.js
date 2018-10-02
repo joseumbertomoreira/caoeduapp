@@ -1,9 +1,7 @@
- 
-
-
 module.exports = {
 
-  parse: function(dbobject) {
+  parseEscolar: function(dbobject) {
+
   	let cities = {};
 
     for(let i = 0; i < dbobject.length; i++){
